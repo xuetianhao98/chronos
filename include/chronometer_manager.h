@@ -55,7 +55,8 @@ class ChronometerManager {
   // Returns the elapsed time for the timer identified by |id| without
   // stopping it.  The timer keeps running after this call.
   // Returns std::nullopt if the id is not found.
-  std::optional<int64_t> Elapsed(uint64_t id, TickPrecision precision = TickPrecision::kMilliseconds) const;
+  std::optional<int64_t> Elapsed(uint64_t id,
+                                 TickPrecision precision = TickPrecision::kMilliseconds) const;
 
  private:
   ChronometerManager() = default;
