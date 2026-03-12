@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(chronos STATIC
         src/chronometer_manager.cpp
+        src/chronotimer.cpp
 )
 
 target_include_directories(chronos
@@ -17,8 +18,14 @@ target_include_directories(chronos
         $<INSTALL_INTERFACE:include>
 )
 
-add_executable(example examples/example.cpp)
+add_executable(chronometer_example examples/chronometer_example.cpp)
 
-target_include_directories(example PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(chronometer_example PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(example PRIVATE chronos)
+target_link_libraries(chronometer_example PRIVATE chronos)
+
+add_executable(chronotimer_example examples/chronotimer_example.cpp)
+
+target_include_directories(chronotimer_example PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(chronotimer_example PRIVATE chronos)
