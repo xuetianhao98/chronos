@@ -29,7 +29,7 @@ namespace chronos {
 //   timer.Stop();
 class ChronoTimer {
  public:
-  using Clock = std::chrono::steady_clock;
+  using Clock = std::chrono::system_clock;
   using TimePoint = Clock::time_point;
   using Duration = Clock::duration;
   using TaskCallback = std::function<void()>;

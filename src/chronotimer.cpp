@@ -69,7 +69,7 @@ void ChronoTimer::WorkerLoop() {
       lock.lock();
     } else {
       // Sleep until the nearest trigger time or until a new task arrives.
-      cv_.wait_until(lock, next_time, [this, next_time] {
+      cv_.wait_until(lock, next_time, [this] {
         return !running_ ||
                (!task_queue_.empty() && task_queue_.top().trigger_time <= Clock::now());
       });
