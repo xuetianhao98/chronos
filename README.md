@@ -3,7 +3,7 @@
 Chronos is a small C++ utility library for working with time-related tasks.
 It is designed as a lightweight collection of tools built on top of `std::chrono`.
 
-The project currently provides a **multi-thread friendly execution timer manager** that can start, track, and stop multiple timers using unique IDs.
+The project currently provides a **multi-thread friendly execution timer manager** and a **task scheduler** that can start, track, and stop multiple timers or schedule tasks to run at specific times.
 
 The library is written in **C++20** and follows the **Google C++ Style Guide**.
 
@@ -20,6 +20,13 @@ Currently implemented:
     * Query elapsed time without stopping the timer
     * Thread-safe usage
     * Multiple time precisions supported
+
+* **ChronoTimer**
+
+    * Schedule tasks to run after a delay or at a specific time
+    * Background worker thread for task execution
+    * Thread-safe task scheduling
+    * Support for relative and absolute timing
 
 Supported time precisions:
 
@@ -51,6 +58,36 @@ int main() {
   if (elapsed) {
     printf("Elapsed: %lld ms\n", *elapsed);
   }
+}
+```
+
+### ChronoTimer Example
+
+```cpp
+#include "chronotimer.h"
+#include <iostream>
+
+using namespace chronos;
+
+int main() {
+  ChronoTimer timer;
+  timer.Start();
+
+  // Schedule a task after 2 seconds
+  timer.Schedule(std::chrono::seconds(2), [] {
+    std::cout << "Task 1 fired after 2 seconds!" << std::endl;
+  });
+
+  // Schedule a task at an absolute time point
+  auto future_time = ChronoTimer::Clock::now() + std::chrono::seconds(5);
+  timer.ScheduleAt(future_time, [] {
+    std::cout << "Task 2 fired at absolute time!" << std::endl;
+  });
+
+  // Wait for tasks to complete
+  std::this_thread::sleep_for(std::chrono::seconds(6));
+
+  timer.Stop();
 }
 ```
 
@@ -94,13 +131,62 @@ Returns `std::nullopt` if the timer ID does not exist.
 
 ---
 
+## ChronoTimer API
+
+### Start/Stop Timer
+
+```cpp
+void Start();
+void Stop();
+```
+
+`Start()` launches the background worker thread. Must be called before scheduling tasks.
+`Stop()` terminates the worker thread and clears all pending tasks.
+
+---
+
+### Schedule Task (Relative)
+
+```cpp
+void Schedule(Duration delay, TaskCallback callback);
+```
+
+Schedules `callback` to be invoked after `delay` from now.
+
+---
+
+### Schedule Task (Absolute)
+
+```cpp
+void ScheduleAt(TimePoint time_point, TaskCallback callback);
+```
+
+Schedules `callback` to be invoked at the absolute `time_point`.
+
+---
+
+### Pending Tasks Count
+
+```cpp
+size_t PendingCount() const;
+```
+
+Returns the number of tasks currently in the queue.
+
+---
+
 # Thread Safety
 
-`ChronometerManager` is thread-safe.
+`ChronometerManager` and `ChronoTimer` are thread-safe.
 
-* Timer IDs are generated using `std::atomic`
-* Timer storage is protected by `std::shared_mutex`
-* Multiple readers (`Elapsed`) can run concurrently
+* `ChronometerManager`:
+    * Timer IDs are generated using `std::atomic`
+    * Timer storage is protected by `std::shared_mutex`
+    * Multiple readers (`Elapsed`) can run concurrently
+* `ChronoTimer`:
+    * Task queue access is protected by `std::mutex`
+    * Condition variable used for efficient worker thread synchronization
+    * `Schedule` and `ScheduleAt` can be called from any thread
 
 ---
 
@@ -108,12 +194,10 @@ Returns `std::nullopt` if the timer ID does not exist.
 
 Current limitations:
 
-* Uses a **singleton design**, which may not fit every use case.
+* `ChronometerManager` uses a **singleton design**, which may not fit every use case.
 * Timers are stored in an `unordered_map`, which may introduce overhead if used for extremely high-frequency timing.
-* No automatic cleanup for long-running timers.
+* No automatic cleanup for long-running timers in `ChronometerManager`.
 * No RAII-style scoped timer yet.
-
-Future versions may include additional utilities for time scheduling, timers, and task management.
 
 ---
 
