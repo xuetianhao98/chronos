@@ -3,7 +3,7 @@ apply: by file patterns
 patterns: .md
 ---
 
-# AI Rules v2: Generating a Professional Bilingual README (Chinese + English)
+# AI Rules v2: Generating a Professional README
 
 This document defines strict rules for AI when generating a **professional open-source README**.
 
@@ -12,16 +12,15 @@ The goal is to ensure the README is:
 * accurate
 * honest
 * technically useful
-* bilingual
 * structured for developers
 
 ---
 
-# 1. Core Philosophy
+# Core Philosophy
 
 AI must follow these core principles.
 
-## 1.1 Honesty First
+## Honesty First
 
 The README must **not exaggerate the project**.
 
@@ -59,7 +58,7 @@ This library provides a simple timer manager built on top of C++ chrono.
 
 ---
 
-## 1.2 Be Transparent About Limitations
+## Be Transparent About Limitations
 
 The README **must describe the project's limitations**.
 
@@ -84,7 +83,7 @@ Transparency increases **developer trust**.
 
 ---
 
-## 1.3 Developer-First Documentation
+## Developer-First Documentation
 
 The README must prioritize:
 
@@ -106,30 +105,7 @@ What problems it has
 
 ---
 
-# 2. Bilingual Documentation Rules
-
-The README must contain **Chinese + English**.
-
-Rules:
-
-1. Chinese section must appear **first**
-2. English section must appear **after**
-3. The two sections must contain **equivalent content**
-
-Example structure:
-
-```
-Chinese Documentation
----------------------
-
-English Documentation
-```
-
-Do **not mix languages in the same paragraph**.
-
----
-
-# 3. Mandatory README Structure
+# Mandatory README Structure
 
 AI must generate the README using this structure.
 
@@ -137,34 +113,21 @@ AI must generate the README using this structure.
 Project Title
 Short Description
 
-Chinese Documentation
-    项目介绍
-    功能特性
-    项目结构
-    安装
-    使用示例
-    设计说明
-    已知问题
-    开发说明
-    贡献指南
-    许可证
-
-English Documentation
-    Introduction
-    Features
-    Project Structure
-    Installation
-    Usage
-    Design
-    Limitations
-    Development
-    Contributing
-    License
+Introduction
+Features
+Project Structure
+Installation
+Usage
+Design
+Limitations
+Development
+Contributing
+License
 ```
 
 ---
 
-# 4. Title and Summary
+# Title and Summary
 
 The README must begin with:
 
@@ -172,14 +135,12 @@ The README must begin with:
 # ProjectName
 ```
 
-Then provide a **bilingual description**.
+Then provide a description.
 
 Example:
 
 ```
 A lightweight C++20 timer manager based on chrono.
-
-一个基于 C++20 chrono 实现的轻量级计时器管理器。
 ```
 
 Rules:
@@ -190,190 +151,7 @@ Rules:
 
 ---
 
-# 5. Chinese Section
-
-Start with:
-
-```
----
-
-# 中文文档
-```
-
----
-
-## 项目介绍
-
-Explain:
-
-* 项目目标
-* 解决的问题
-* 基本设计
-
-Length:
-
-3–6 sentences.
-
-Avoid exaggerated claims.
-
----
-
-## 功能特性
-
-Use bullet points.
-
-Example:
-
-```
-- 基于 C++20 chrono
-- 支持多个计时器
-- 线程安全
-- 简单 API
-```
-
-Rules:
-
-* 3–8 items
-* concise
-
----
-
-## 项目结构
-
-Provide a directory tree.
-
-Example:
-
-```
-project
-├── include/
-│   └── chronometer_manager.h
-├── src/
-│   └── chronometer_manager.cpp
-├── examples/
-│   └── example.cpp
-└── README.md
-```
-
----
-
-## 安装
-
-Prefer **CMake**.
-
-Example:
-
-```bash
-git clone https://github.com/example/project.git
-cd project
-cmake -B build
-cmake --build build
-```
-
----
-
-## 使用示例
-
-Provide a minimal example.
-
-Example:
-
-```cpp
-auto id = ChronometerManager::Instance().Start();
-
-DoWork();
-
-auto duration =
-    ChronometerManager::Instance().Stop(id);
-```
-
-Example must be:
-
-* short
-* realistic
-* compilable
-
----
-
-## 设计说明
-
-Explain major design choices.
-
-Example topics:
-
-* 为什么使用 chrono
-* 为什么使用单例
-* 线程安全策略
-
-Use bullet points.
-
----
-
-## 已知问题
-
-This section is **mandatory**.
-
-Example:
-
-```
-## 已知问题
-
-- 当前实现没有对象池，计时器创建成本较高
-- Windows 平台尚未测试
-- API 仍可能调整
-```
-
-AI must list **realistic limitations**.
-
----
-
-## 开发说明
-
-Describe development requirements.
-
-Example:
-
-```
-- C++20
-- GCC 13+
-- CMake 3.20+
-```
-
----
-
-## 贡献指南
-
-Example:
-
-```
-1 Fork repository
-2 Create feature branch
-3 Submit pull request
-```
-
----
-
-## 许可证
-
-Example:
-
-```
-MIT License
-```
-
----
-
-# 6. English Section
-
-Start with:
-
-```
----
-
-# English Documentation
-```
-
-Sections must match the Chinese structure.
+# Structure
 
 ```
 Introduction
@@ -392,7 +170,7 @@ English should be **natural technical English**, not literal translation.
 
 ---
 
-# 7. Markdown Formatting Rules
+# Markdown Formatting Rules
 
 AI must follow these rules.
 
@@ -454,7 +232,7 @@ project
 
 ---
 
-# 8. Required Engineering Sections
+# Required Engineering Sections
 
 AI must ensure the README contains:
 
@@ -470,7 +248,7 @@ These sections are **not optional**.
 
 ---
 
-# 9. Language Style Rules
+# Language Style Rules
 
 AI must write in:
 
@@ -499,7 +277,7 @@ code examples
 
 ---
 
-# 10. Ideal README Length
+# Ideal README Length
 
 Recommended size:
 
@@ -517,7 +295,7 @@ Medium projects:
 
 ---
 
-# 11. Output Format
+# Output Format
 
 AI must output:
 
