@@ -24,24 +24,24 @@ enum class TickPrecision {
   kHours,
 };
 
-// ChronometerManager manages multiple timers identified by unique IDs
+// Chronometer manages multiple timers identified by unique IDs
 // and measures execution durations across threads.
 //
 // Usage:
-//   auto& mgr = ChronometerManager::Instance();
+//   auto& mgr = Chronometer::Instance();
 //   uint64_t id = mgr.Start();
 //   // ... work ...
 //   auto ms = mgr.Stop(id, TickPrecision::kMilliseconds);
-class ChronometerManager {
+class Chronometer {
  public:
   // Returns the singleton instance.
-  static ChronometerManager& Instance();
+  static Chronometer& Instance();
 
   // Not copyable or movable.
-  ChronometerManager(const ChronometerManager&) = delete;
-  ChronometerManager& operator=(const ChronometerManager&) = delete;
-  ChronometerManager(ChronometerManager&&) = delete;
-  ChronometerManager& operator=(ChronometerManager&&) = delete;
+  Chronometer(const Chronometer&) = delete;
+  Chronometer& operator=(const Chronometer&) = delete;
+  Chronometer(Chronometer&&) = delete;
+  Chronometer& operator=(Chronometer&&) = delete;
 
   // Starts a new timer and returns its unique id.
   uint64_t Start();
@@ -59,8 +59,8 @@ class ChronometerManager {
                                  TickPrecision precision = TickPrecision::kMilliseconds) const;
 
  private:
-  ChronometerManager() = default;
-  ~ChronometerManager() = default;
+  Chronometer() = default;
+  ~Chronometer() = default;
 
   using Clock = std::chrono::steady_clock;
   using TimePoint = Clock::time_point;

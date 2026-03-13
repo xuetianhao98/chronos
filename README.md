@@ -3,8 +3,6 @@
 Chronos is a small C++ utility library for working with time-related tasks.
 It is designed as a lightweight collection of tools built on top of `std::chrono`.
 
-The project currently provides a **multi-thread friendly execution timer manager** and a **task scheduler** that can start, track, and stop multiple timers or schedule tasks to run at specific times.
-
 The library is written in **C++20** and follows the **Google C++ Style Guide**.
 
 ---
@@ -13,7 +11,7 @@ The library is written in **C++20** and follows the **Google C++ Style Guide**.
 
 Currently implemented:
 
-* **ChronometerManager**
+* **Chronometer**
 
     * Start multiple timers using unique IDs
     * Stop timers and obtain elapsed time
@@ -41,13 +39,15 @@ Supported time precisions:
 
 # Example
 
+## Chronometer Example
+
 ```cpp
-#include "chronometer_manager.h"
+#include "chronometer.h"
 
 using namespace chronos;
 
 int main() {
-  auto& mgr = ChronometerManager::Instance();
+  auto& mgr = Chronometer::Instance();
 
   uint64_t id = mgr.Start();
 
@@ -61,7 +61,7 @@ int main() {
 }
 ```
 
-### ChronoTimer Example
+## ChronoTimer Example
 
 ```cpp
 #include "chronotimer.h"
@@ -94,6 +94,8 @@ int main() {
 ---
 
 # API Overview
+
+## Chronometer API
 
 ### Start a timer
 
@@ -177,9 +179,9 @@ Returns the number of tasks currently in the queue.
 
 # Thread Safety
 
-`ChronometerManager` and `ChronoTimer` are thread-safe.
+`Chronometer` and `ChronoTimer` are thread-safe.
 
-* `ChronometerManager`:
+* `Chronometer`:
     * Timer IDs are generated using `std::atomic`
     * Timer storage is protected by `std::shared_mutex`
     * Multiple readers (`Elapsed`) can run concurrently
@@ -194,9 +196,9 @@ Returns the number of tasks currently in the queue.
 
 Current limitations:
 
-* `ChronometerManager` uses a **singleton design**, which may not fit every use case.
+* `Chronometer` uses a **singleton design**, which may not fit every use case.
 * Timers are stored in an `unordered_map`, which may introduce overhead if used for extremely high-frequency timing.
-* No automatic cleanup for long-running timers in `ChronometerManager`.
+* No automatic cleanup for long-running timers in `Chronometer`.
 * No RAII-style scoped timer yet.
 
 ---

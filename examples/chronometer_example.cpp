@@ -6,10 +6,10 @@
 #include <iostream>
 #include <thread>
 
-#include "chronometer_manager.h"
+#include "chronometer.h"
 
 int main() {
-  auto& mgr = chronos::ChronometerManager::Instance();
+  auto& mgr = chronos::Chronometer::Instance();
 
   // -- 1. Basic usage: Start -> Stop --
   std::cout << "=== Basic Start/Stop ===\n";
