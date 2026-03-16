@@ -10,6 +10,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(chronos STATIC
         src/chronometer.cpp
         src/chronotimer.cpp
+        include/threadpool.h
+        src/threadpool.cpp
 )
 
 target_include_directories(chronos

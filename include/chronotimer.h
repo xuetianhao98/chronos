@@ -1,5 +1,5 @@
 //
-// Created by theo on 2026/3/12.
+// Created by Theo Tianhao Xue on 2026/3/12.
 //
 
 #ifndef CHRONOS_CHRONOTIMER_H_
@@ -8,24 +8,25 @@
 #include <chrono>
 #include <condition_variable>
 #include <functional>
+#include <memory>
 #include <mutex>
 #include <queue>
-#include <thread>
 #include <vector>
+
+#include "threadpool.h"
 
 namespace chronos {
 
 // ChronoTimer manages scheduled tasks and fires them at specified time points.
 //
-// Tasks are stored in a min-heap (priority queue) sorted by trigger time.
-// A background worker thread sleeps until the next task is due, then
-// executes it.
+// Internally owns a ThreadPool. The scheduling worker loop runs as a task
+// inside the pool, and each due callback is also dispatched to the pool for
+// concurrent execution.
 //
 // Usage:
-//   chronos::ChronoTimer timer;
+//   chronos::ChronoTimer timer;      // uses default pool size
 //   timer.Start();
 //   timer.Schedule(std::chrono::seconds(3), [] { std::puts("Hello!"); });
-//   // ... after 3 seconds, "Hello!" is printed.
 //   timer.Stop();
 class ChronoTimer {
  public:
@@ -34,7 +35,11 @@ class ChronoTimer {
   using Duration = Clock::duration;
   using TaskCallback = std::function<void()>;
 
-  ChronoTimer() = default;
+  // Creates a ChronoTimer with an internal thread pool of |thread_count|
+  // threads. If |thread_count| is 0, defaults to
+  // std::thread::hardware_concurrency().  At least 2 threads are required
+  // (one for the worker loop, the rest for callbacks).
+  explicit ChronoTimer(std::size_t thread_count = 0);
   ~ChronoTimer();
 
   // Not copyable or movable.
@@ -43,11 +48,10 @@ class ChronoTimer {
   ChronoTimer(ChronoTimer&&) = delete;
   ChronoTimer& operator=(ChronoTimer&&) = delete;
 
-  // Starts the background worker thread.
-  // Must be called before scheduling tasks.
+  // Starts the background worker loop by submitting it to the thread pool.
   void Start();
 
-  // Stops the background worker thread. Pending tasks that have not yet
+  // Stops the background worker loop. Pending tasks that have not yet
   // fired are discarded.
   void Stop();
 
@@ -58,7 +62,7 @@ class ChronoTimer {
   void ScheduleAt(TimePoint time_point, TaskCallback callback);
 
   // Returns the number of pending tasks in the queue.
-  size_t PendingCount() const;
+  std::size_t PendingCount() const;
 
  private:
   // A scheduled task entry.
@@ -74,14 +78,17 @@ class ChronoTimer {
   // The background worker loop.
   void WorkerLoop();
 
+  std::unique_ptr<ThreadPool> pool_;
+
   mutable std::mutex mutex_;
   std::condition_variable cv_;
 
   // Min-heap: earliest trigger time on top.
   std::priority_queue<Task, std::vector<Task>, std::greater<Task>> task_queue_;
 
-  std::thread worker_;
   bool running_ = false;
+  bool worker_done_ = false;
+  std::condition_variable done_cv_;
 };
 
 }  // namespace chronos
