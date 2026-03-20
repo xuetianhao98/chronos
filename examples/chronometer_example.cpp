@@ -79,5 +79,16 @@ int main() {
   if (us) std::cout << "Microseconds: " << *us << " us\n";
   if (s) std::cout << "Seconds:      " << *s << " s\n";
 
+  // -- 6. Opt in to RDTSC-backed timing when supported --
+  std::cout << "\n=== RDTSC-backed timing ===\n";
+  uint64_t id4 = mgr.Start(true);
+  std::this_thread::sleep_for(std::chrono::milliseconds(25));
+
+  auto rdtsc_cycles = mgr.Stop(id4, chronos::TickPrecision::kMicroseconds, true);
+  if (rdtsc_cycles) {
+    std::cout << "Timer 4 elapsed via RDTSC (or steady fallback): " << *rdtsc_cycles
+              << " cycles\n";
+  }
+
   return 0;
 }

@@ -18,6 +18,7 @@ Currently implemented:
     * Query elapsed time without stopping the timer
     * Thread-safe usage
     * Multiple time precisions supported
+    * Optional `RDTSC` timing on supported x86/x64 CPUs
 
 * **ChronoTimer**
 
@@ -100,10 +101,12 @@ int main() {
 ### Start a timer
 
 ```cpp
-uint64_t Start();
+uint64_t Start(bool use_rdtsc = false);
 ```
 
 Creates a new timer and returns a unique ID.
+If `use_rdtsc` is enabled, `Chronometer` records a TSC timestamp on supported
+x86/x64 CPUs and falls back to `steady_clock` otherwise.
 
 ---
 
@@ -111,10 +114,15 @@ Creates a new timer and returns a unique ID.
 
 ```cpp
 std::optional<int64_t> Stop(uint64_t id,
-                            TickPrecision precision = TickPrecision::kMilliseconds);
+                            TickPrecision precision = TickPrecision::kMilliseconds,
+                            bool use_rdtsc = false);
 ```
 
 Stops the timer and returns the elapsed time.
+When `use_rdtsc` is requested, `Chronometer` prefers the TSC path only when the
+timer has TSC state and the platform exposes a reliable invariant TSC. In that
+mode, the return value is the raw elapsed cycle count and `precision` is
+ignored.
 
 Returns `std::nullopt` if the timer ID does not exist.
 
@@ -124,10 +132,14 @@ Returns `std::nullopt` if the timer ID does not exist.
 
 ```cpp
 std::optional<int64_t> Elapsed(uint64_t id,
-                               TickPrecision precision = TickPrecision::kMilliseconds) const;
+                               TickPrecision precision = TickPrecision::kMilliseconds,
+                               bool use_rdtsc = false) const;
 ```
 
 Returns elapsed time without stopping the timer.
+As with `Stop`, the implementation falls back to `steady_clock` if `RDTSC`
+cannot be used safely. When `RDTSC` is used, the return value is the raw
+elapsed cycle count and `precision` is ignored.
 
 Returns `std::nullopt` if the timer ID does not exist.
 
@@ -200,6 +212,8 @@ Current limitations:
 * Timers are stored in an `unordered_map`, which may introduce overhead if used for extremely high-frequency timing.
 * No automatic cleanup for long-running timers in `Chronometer`.
 * No RAII-style scoped timer yet.
+* `RDTSC` support is only available on x86/x64 CPUs with an invariant TSC and a
+  stable TSC; unsupported systems automatically use `steady_clock`.
 
 ---
 
